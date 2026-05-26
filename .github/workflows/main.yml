@@ -1,13 +1,15 @@
-name: Build and Push Docker Image to ECR
+name: Build and Push Docker Image
 
 on:
   push:
-    branches:
-      - main
+    branches: [ "main" ]
 
 jobs:
-  build-and-push:
+  build:
     runs-on: ubuntu-latest
+
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
       - name: Checkout code
@@ -18,16 +20,16 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
+          aws-region: ap-south-1
 
       - name: Login to Amazon ECR
-        uses: aws-actions/amazon-ecr-login@v2
+        run: aws ecr get-login-password | docker login --username AWS --password-stdin YOUR_ECR_URI
 
       - name: Build Docker image
         run: docker build -t car-web .
 
-      - name: Tag Docker image
-        run: docker tag car-web:latest 203800220670.dkr.ecr.us-east-1.amazonaws.com/car-web:latest
+      - name: Tag image
+        run: docker tag car-web:latest YOUR_ECR_URI/car-web:latest
 
-      - name: Push Docker image
-        run: docker push 203800220670.dkr.ecr.us-east-1.amazonaws.com/car-web:latest
+      - name: Push image
+        run: docker push YOUR_ECR_URI/car-web:latest
