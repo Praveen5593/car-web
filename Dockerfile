@@ -1,4 +1,4 @@
-# Stage 1: Build the app
+# Stage 1: Build React/Vite app
 FROM node:20 AS build
 
 WORKDIR /app
@@ -14,14 +14,12 @@ COPY . .
 RUN npm run build
 
 
-# Stage 2: Serve with Nginx
+# Stage 2: Serve using Nginx
 FROM nginx:alpine
 
-# copy build output to nginx folder
+# copy build output
 COPY --from=build /app/dist /usr/share/nginx/html
 
-# expose port
 EXPOSE 80
 
-# run nginx
 CMD ["nginx", "-g", "daemon off;"]
