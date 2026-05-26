@@ -23,13 +23,13 @@ jobs:
           aws-region: ap-south-1
 
       - name: Login to Amazon ECR
-        run: aws ecr get-login-password | docker login --username AWS --password-stdin YOUR_ECR_URI
+        run: aws ecr get-login-password | docker login --username AWS --password-stdin 203800220670.dkr.ecr.us-east-1.amazonaws.com/car-web
 
       - name: Build Docker image
         run: docker build -t car-web .
 
       - name: Tag image
-        run: docker tag car-web:latest YOUR_ECR_URI/car-web:latest
+        run: docker tag car-web:latest 203800220670.dkr.ecr.us-east-1.amazonaws.com/car-web:latest
 
       - name: Push image
         run: docker push YOUR_ECR_URI/car-web:latest
