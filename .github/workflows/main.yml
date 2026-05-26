@@ -1,35 +1,19 @@
-name: Build and Push Docker Image
+- name: Configure AWS credentials
+  uses: aws-actions/configure-aws-credentials@v4
+  with:
+    aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    aws-region: us-east-1
 
-on:
-  push:
-    branches: [ "main" ]
+- name: Login to Amazon ECR
+  run: |
+    aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 203800220670.dkr.ecr.us-east-1.amazonaws.com
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
+- name: Build Docker image
+  run: docker build -t car-web .
 
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+- name: Tag Docker image
+  run: docker tag car-web:latest 203800220670.dkr.ecr.us-east-1.amazonaws.com/car-web:latest
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-south-1
-
-      - name: Login to Amazon ECR
-        run: aws ecr get-login-password | docker login --username AWS --password-stdin 203800220670.dkr.ecr.us-east-1.amazonaws.com/car-web
-
-      - name: Build Docker image
-        run: docker build -t car-web .
-
-      - name: Tag image
-        run: docker tag car-web:latest 203800220670.dkr.ecr.us-east-1.amazonaws.com/car-web:latest
-
-      - name: Push image
-        run: docker push YOUR_ECR_URI/car-web:latest
+- name: Push Docker image
+  run: docker push 203800220670.dkr.ecr.us-east-1.amazonaws.com/car-web:latest
