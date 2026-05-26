@@ -28,9 +28,9 @@ jobs:
 
       # Build Docker image
       - name: Build Docker image
-        run: docker build -t car-web./frontend
+        run: docker build -t car-web ./frontend
 
-      # Tag image
+      # Tag Docker image
       - name: Tag Docker image
         run: docker tag car-web:latest 203800220670.dkr.ecr.us-east-1.amazonaws.com/car-web:latest
 
