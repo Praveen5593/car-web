@@ -28,7 +28,7 @@ jobs:
 
       # Build Docker image
       - name: Build Docker image
-        run: docker build -t car-web .
+        run: docker build -t car-web ./frontend
 
       # Tag image
       - name: Tag Docker image
